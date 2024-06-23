@@ -1,0 +1,188 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class LibraryManagementSystem {
+
+    public static void main(String[] args) {
+        LibraryCatalog library = new LibraryCatalog();
+
+        // Adding some initial books to the library catalog
+        library.addBook(new Book("Java Programming", "John Doe"));
+        library.addBook(new Book("Python Basics", "Jane Smith"));
+        library.addBook(new Book("Web Development", "Alice Brown"));
+
+        // Example usage: Displaying the main menu to the user
+        library.displayMenu();
+    }
+}
+
+class Book {
+    private String title;
+    private String author;
+    private boolean isCheckedOut;
+
+    // Constructor to initialize a Book object with title, author, and availability status
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isCheckedOut = false; // Initially all books are available
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public boolean isCheckedOut() {
+        return isCheckedOut;
+    }
+
+    public void setCheckedOut(boolean checkedOut) {
+        isCheckedOut = checkedOut;
+    }
+}
+
+class LibraryCatalog {
+    private ArrayList<Book> books; // ArrayList to store books
+
+    public LibraryCatalog() {
+        this.books = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public void searchByTitle(String title) {
+        boolean found = false;
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                displayBookDetails(book); // Display details of the found book
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Book with title '" + title + "' not found.\n"); // Notify if book not found
+        }
+    }
+
+    public void searchByAuthor(String author) {
+        boolean found = false;
+        for (Book book : books) {
+            if (book.getAuthor().equalsIgnoreCase(author)) {
+                displayBookDetails(book); // Display details of the found book
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No books found for author '" + author + "'.\n"); // Notify if no books found for author
+        }
+    }
+
+    public void checkOutBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                if (!book.isCheckedOut()) {
+                    book.setCheckedOut(true); // Set book as checked out
+                    System.out.println("Book '" + title + "' checked out successfully.\n");
+                } else {
+                    System.out.println("Book '" + title + "' is already checked out.\n");
+                }
+                return;
+            }
+        }
+        System.out.println("Book with title '" + title + "' not found.\n"); // Notify if book not found
+    }
+
+    public void returnBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                if (book.isCheckedOut()) {
+                    book.setCheckedOut(false); // Set book as returned
+                    System.out.println("Book '" + title + "' returned successfully.\n");
+                } else {
+                    System.out.println("Book '" + title + "' is already available.\n");
+                }
+                return;
+            }
+        }
+        System.out.println("Book with title '" + title + "' not found.\n"); // Notify if book not found
+    }
+
+    public void displayMenu() {
+        Scanner input = new Scanner(System.in);
+        int choice;
+
+        do {
+            // Displaying the Library Management System menu
+            System.out.println("\n===== Library Management System Menu =====");
+            System.out.println("1. Add a Book");
+            System.out.println("2. Search by Title");
+            System.out.println("3. Search by Author");
+            System.out.println("4. Check Out a Book");
+            System.out.println("5. Return a Book");
+            System.out.println("6. Exit");
+            System.out.println("------------------------------------------");
+            System.out.print("Enter your choice: ");
+            choice = input.nextInt();
+            input.nextLine(); // Consume newline character
+
+            // Handling user's choice with a switch statement
+            switch (choice) {
+                case 1:
+                    // Adding a new book
+                    System.out.print("\nEnter title of the book: ");
+                    String title = input.nextLine();
+                    System.out.print("Enter author of the book: ");
+                    String author = input.nextLine();
+                    addBook(new Book(title, author));
+                    System.out.println("Book added successfully.\n");
+                    break;
+                case 2:
+                    // Searching for a book by title
+                    System.out.print("\nEnter title to search: ");
+                    String searchTitle = input.nextLine();
+                    searchByTitle(searchTitle);
+                    break;
+                case 3:
+                    // Searching for books by author
+                    System.out.print("\nEnter author to search: ");
+                    String searchAuthor = input.nextLine();
+                    searchByAuthor(searchAuthor);
+                    break;
+                case 4:
+                    // Checking out a book
+                    System.out.print("\nEnter title of the book to check out: ");
+                    String checkOutTitle = input.nextLine();
+                    checkOutBook(checkOutTitle);
+                    break;
+                case 5:
+                    // Returning a book
+                    System.out.print("\nEnter title of the book to return: ");
+                    String returnTitle = input.nextLine();
+                    returnBook(returnTitle);
+                    break;
+                case 6:
+                    // Exiting the program
+                    System.out.println("\nExiting... Thank you!\n");
+                    break;
+                default:
+                    // Handling invalid user input
+                    System.out.println("\nInvalid choice. Please enter a number between 1 and 6.\n");
+            }
+        } while (choice != 6);
+
+        input.close(); // Closing the Scanner object to release resources
+    }
+
+    // Method to display details of a book
+    private void displayBookDetails(Book book) {
+        System.out.println("\nTitle: " + book.getTitle());
+        System.out.println("Author: " + book.getAuthor());
+        System.out.println("Status: " + (book.isCheckedOut() ? "Checked Out" : "Available"));
+    }
+}
