@@ -1,0 +1,83 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class NumberGuessingGame {
+
+    public static void main(String[] args) {
+        // Start the game
+        GameEngine game = new GameEngine();
+        game.startGame();
+    }
+}
+
+class GameEngine {
+    private int secretNumber;
+    private int maxAttempts;
+    private int attemptCount;
+    private Scanner input;
+
+    public GameEngine() {
+        // Initialize game settings
+        RandomNumberGenerator rng = new RandomNumberGenerator();
+        secretNumber = rng.generateNumber();
+        maxAttempts = 5;
+        attemptCount = 0;
+        input = new Scanner(System.in);
+    }
+
+    public void startGame() {
+        // Welcome message
+        System.out.println("Welcome to the Number Guessing Game!");
+        System.out.println("I've picked a number between 1 and 100. Can you guess it?");
+        System.out.println("You have " + maxAttempts + " tries to get it right.");
+
+        boolean hasWon = false;
+
+        // Game loop
+        while (attemptCount < maxAttempts) {
+            int userGuess = getUserGuess();
+            if (checkGuess(userGuess)) {
+                hasWon = true;
+                break;
+            }
+        }
+
+        // End of game message
+        if (hasWon) {
+            System.out.println("Congrats! You guessed the number!");
+        } else {
+            System.out.println("Out of attempts! The number was " + secretNumber);
+        }
+
+        input.close();
+    }
+
+    private int getUserGuess() {
+        // Prompt user for a guess
+        System.out.print("Enter your guess: ");
+        int guess = input.nextInt();
+        attemptCount++;
+        return guess;
+    }
+
+    private boolean checkGuess(int guess) {
+        // Check if the guess is correct
+        if (guess > secretNumber) {
+            System.out.println("Too high!");
+            return false;
+        } else if (guess < secretNumber) {
+            System.out.println("Too low!");
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+class RandomNumberGenerator {
+    public int generateNumber() {
+        // Generate a random number between 1 and 100
+        Random random = new Random();
+        return random.nextInt(100) + 1;
+    }
+}
